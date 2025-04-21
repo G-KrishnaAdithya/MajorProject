@@ -53,4 +53,41 @@ async def login(user: User):
             code=401,
         )
         
+
+@router.get("/all_users", response_model=Union[SuccessResponse, ErrorResponse])
+async def get_all_users():
+    """
+    Get all users endpoint.
+    """
+    users = QueryHelper.find("users",{"username": { "$ne": "admin"} } )
+    if not users:
+        return ErrorResponse(
+            success=False,
+            errors=[{"message": "No users found"}],
+            code=404,
+        )
+    return SuccessResponse(
+        success=True,
+        data={"users": users},
+        message="Users retrieved successfully",
+        code=200,
+    )
     
+@router.delete("/delete_user/{username}", response_model=Union[SuccessResponse, ErrorResponse])
+async def delete_user(username: str):
+    """
+    Delete user endpoint.
+    """
+    user_found = QueryHelper.find_one("users", {"username": username})
+    if not user_found:
+        return ErrorResponse(
+            success=False,
+            errors=[{"message": "User not found"}],
+            code=404,
+        )
+    QueryHelper.delete_one("users", {"username": username})
+    return SuccessResponse(
+        success=True,
+        message="User deleted successfully",
+        code=200,
+    )

@@ -20,19 +20,25 @@ function login() {
 
   fetch(`${BASE_URL}/user/login`, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password })
   })
     .then(res => res.json())
     .then(data => {
       if (data.success) {
         localStorage.setItem('username', username);
-        window.location.href = 'index.html';
+        // Redirect based on user role
+        if (username === 'admin') {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = 'index.html';
+        }
       } else {
         alert(data.errors[0].message);
       }
     });
 }
+
 
 // SIGNUP
 function signup() {

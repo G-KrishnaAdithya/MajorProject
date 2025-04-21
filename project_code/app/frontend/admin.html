@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f7f7f7; }
+    h1 { color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background-color: #f0f0f0; }
+    button { padding: 5px 10px; border: none; cursor: pointer; }
+    button.delete { background-color: crimson; color: white; }
+    button.delete:hover { background-color: darkred; }
+    button#logout-btn { background-color: #007BFF; color: white; margin-left: 20px; }
+    button#logout-btn:hover { background-color: #0056b3; }
+    .toolbar { margin-bottom: 20px; display: flex; align-items: center; }
+    .toolbar p { margin: 0; }
+  </style>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <div class="toolbar">
+    <p>Logged in as: <strong id="admin-user"></strong></p>
+    <button id="logout-btn">Logout</button>
+  </div>
+  <h2>All Users</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Agency</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="user-list">
+      <!-- User rows will be populated here -->
+    </tbody>
+  </table>
+
+  <script>
+    const BASE_URL = 'http://localhost:8002'; // Update if needed
+
+    window.onload = function () {
+      const username = localStorage.getItem('username');
+      if (username !== 'admin') {
+        alert('Access denied. Admins only.');
+        window.location.href = 'login.html';
+      } else {
+        document.getElementById('admin-user').textContent = username;
+        document.getElementById('logout-btn').addEventListener('click', logout);
+        fetchUsers();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('username');
+      window.location.href = 'login.html';
+    }
+
+    function fetchUsers() {
+      fetch(`${BASE_URL}/user/all_users`)
+        .then(res => res.json())
+        .then(data => {
+          const list = document.getElementById('user-list');
+          list.innerHTML = '';
+          if (data.success && data.data.users.length > 0) {
+            data.data.users.forEach(user => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${user.username}</td>
+                <td>${user.email || ''}</td>
+                <td>${user.phone || ''}</td>
+                <td>${user.ad_agency_name || ''}</td>
+                <td><button class="delete" onclick="deleteUser('${user.username}')">Delete</button></td>
+              `;
+              list.appendChild(row);
+            });
+          } else {
+            list.innerHTML = '<tr><td colspan="5">No users found</td></tr>';
+          }
+        })
+        .catch(err => console.error('Error fetching users:', err));
+    }
+
+    function deleteUser(username) {
+      if (confirm(`Are you sure you want to delete ${username}?`)) {
+        fetch(`${BASE_URL}/user/delete_user/${username}`, {
+          method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('User deleted');
+            fetchUsers(); // Refresh the list
+          } else {
+            alert(data.errors[0].message || 'Error deleting user');
+          }
+        })
+        .catch(err => console.error('Error deleting user:', err));
+      }
+    }
+  </script>
+</body>
+</html>
