@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home - Storyboard Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome, <span id="username-display"></span>!</h1>
+
+    <textarea id="story" placeholder="Enter your story here..."></textarea>
+    <button onclick="generateVideo()">Generate Video</button>
+    <button onclick="fetchVideos()">Show Previous Videos</button>
+    <button onclick="logout()">Logout</button>
+
+    <h2>Generated Videos</h2>
+    <div id="video-list"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

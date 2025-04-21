@@ -177,15 +177,14 @@ def generate_storyboard_video(text):
         str: Path to the generated video.
     """
     # Ensure output directory exists
-    output_dir = "generated_videos"
+    output_dir = "frontend/generated_videos"
     os.makedirs(output_dir, exist_ok=True)
 
     # Generate a unique filename based on the input text
     hash_object = hashlib.md5(text.encode())
     video_filename = f"storyboard_{hash_object.hexdigest()[:8]}.mp4"
     output_path = os.path.join(output_dir, video_filename)
-
+    final_output_path = output_path.replace("/frontend", "")  # Adjust path for serving
     # Generate the video using the existing function
     generate_sentence_by_sentence_video(text, output_filename=output_path)
-
-    return output_path
+    return final_output_path

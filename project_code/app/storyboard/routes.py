@@ -16,7 +16,7 @@ async def generate_storyboard_endpoint(storyboard:StoryBoard):
         {
             "story": story,
             "username": name,
-            "video": link,
+            "video": link.replace("frontend/",""),
         }
     )
     return SuccessResponse(
