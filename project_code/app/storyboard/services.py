@@ -91,7 +91,7 @@ def generate_sentence_by_sentence_video(text, output_filename="output_sentence_b
         output_filename (str): The output video file.
     """
     # Split text into sentences and filter out empty strings
-    sentences = text.split(". ")
+    sentences = text.split(".")
     sentences = [sentence.strip() + ("." if not sentence.endswith(".") else "") for sentence in sentences if sentence.strip()]
     print(sentences)
 
