@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+pymongo
+dnspython
+pydantic
+gTTS
+requests
+python-dotenv
+fastapi[all]
+Pillow
+httpx
+aiofiles
