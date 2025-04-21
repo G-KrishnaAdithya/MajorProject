@@ -362,31 +362,4 @@ class QueryHelper:
                 errors=[{"detail": str(e)}],
             )
 
-    @staticmethod
-    def soft_delete_one(
-        collection_name: str, query: Dict
-    ) -> Union[Dict, ErrorResponse]:
-        """
-        Soft delete a document by setting its 'is_deleted' flag to True.
-
-        This method doesn't actually remove the document from the database,
-        but marks it as deleted for application-level filtering.
-
-        Args:
-            collection_name: Name of the MongoDB collection
-            query: Query criteria to match the document to soft delete
-
-        Returns:
-            The updated document with '_id' transformed to 'id', or an ErrorResponse
-        """
-        try:
-            updated_document = QueryHelper.update_one(
-                collection_name, query, {"is_deleted": True}
-            )
-            return QueryHelper._transform_document(updated_document)
-        except Exception as e:
-            return ErrorResponse(
-                message=f"Error in soft_delete_one for collection '{collection_name}': {e}",
-                code=500,
-                errors=[{"detail": str(e)}],
-            )
+    
